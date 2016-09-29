@@ -1,0 +1,16 @@
+<button {{action 'filterByIdMod10'}}>Filter by id mod 10</button>
+
+<div style='display: flex'>
+  {{#each model as |widget|}}
+    <div style='margin-left: 10px'>
+      {{x-widget widget=widget}}
+    </div>
+  {{/each}}
+</div>
+
+<div style='margin-top: 20px;'>
+  <button disabled={{if (eq page 1) true}} {{action 'prev'}}>Prev</button>
+  <button {{action 'next'}}>Next</button>
+
+  <span>Total Records: {{total}}</span>
+</div>
