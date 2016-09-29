@@ -1,3 +1,4 @@
+import Ember from 'ember';
 export default function() {
 
   this.get('/widget_finders/:filter', function(db, request) {
@@ -29,6 +30,23 @@ export default function() {
     limit = +limit;
     page = +page;
 
-    return db.widgets.find(ids);
+    let requestedWidgets = db.widgets.find(ids);
+
+    if (request.requestHeaders['X-Customer']) {
+      let customerWidgetIds = Ember.A([]);
+      requestedWidgets.models.forEach(function(widget) {
+        customerWidgetIds.pushObject(db.customerWidgets.create({
+          widget,
+          hasPurchased: Math.random() >= 0.5,
+        }).attrs.id);
+      });
+
+      // LOL mirage 2
+      let json = this.serialize(requestedWidgets);
+      json.customer_widgets = this.serialize(db.customerWidgets.find(customerWidgetIds)).customer_widgets;
+      return json;
+    } else {
+      return requestedWidgets;
+    }
   });
 }

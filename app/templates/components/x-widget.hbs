@@ -1,3 +1,6 @@
-<div style='border: 1px solid black; width: 100px; height: 100px;'>
+<div style='border: 1px solid black; width: 200px; height: 200px;'>
   <h3>{{widget.id}}</h3>
+  {{#if widget.customerWidget}}
+    Customer Purchased? {{widget.customerWidget.hasPurchased}}
+  {{/if}}
 </div>
