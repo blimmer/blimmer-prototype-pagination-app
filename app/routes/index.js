@@ -1,10 +1,6 @@
 import Ember from 'ember';
 
-const { inject: { service } } = Ember;
-
 export default Ember.Route.extend({
-  ajax: service(),
-
   queryParams: {
     page: {
       refreshModel: true,
@@ -23,20 +19,20 @@ export default Ember.Route.extend({
   model(params) {
     let store = this.store;
 
-    let finderRequest = 'widget-finder';
+    let finderId = 'default';
     if (params.filterByIdMod10) {
-      finderRequest += '?filter=mod10';
+      finderId = 'mod10';
     }
 
-    return this.get('ajax').request(finderRequest).then((res) => {
-      this._setTotal(res.meta.total);
+    return store.findRecord('widget-finder', finderId).then((res) => {
+      this._setTotal(res.get('total'));
 
       let page = params.page;
       let limit = this.get('limit');
 
       let offset = limit * (page - 1);
 
-      let pageOfIds = res.ids.slice(offset, limit + offset);
+      let pageOfIds = res.get('widgetIds').slice(offset, limit + offset);
 
       // I'd like to wrap this logic up into a store method
       let toRequest = pageOfIds.reject((id) => {

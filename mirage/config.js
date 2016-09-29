@@ -1,21 +1,23 @@
 export default function() {
 
-  this.get('/widget-finder', function(db, request) {
+  this.get('/widget_finders/:filter', function(db, request) {
+    let filter = request.params.filter;
     let widgets = db.widgets.all().models;
 
     let filtered;
-    if (request.queryParams.filter === 'mod10') {
+    if (filter === 'default') {
+      filtered = widgets;
+    } else if (filter === 'mod10') {
       filtered = widgets.filter(function(widget) {
         return widget.id % 10 === 0;
       });
-    } else {
-      filtered = widgets;
     }
 
     return {
-      ids: filtered.mapBy('id'),
-      meta: {
-        total: filtered.length
+      widget_finder: {
+        id: filter,
+        widget_ids: filtered.mapBy('id'),
+        total: filtered.length,
       }
     };
   });
